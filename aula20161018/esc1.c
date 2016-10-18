@@ -3,13 +3,14 @@
 #include <string.h>
 char * iniciaTexto();
 char * recebeTexto();
-char * leTexto();
-
+void gravaTexto (char * texto, int nchar);
 int main() {
     char * texto;
     printf("::: Inicio (para sair, tecle #,ENTER) :::::::::::\n");
     texto = recebeTexto();
-    printf("\n::: Ate a proxima :::::::::::\n");
+    printf("\n::: Na memoria :::::::::::\n");
+    printf("%s\n", texto);
+    printf("\nTamanho da string: %d\n", strlen(texto));
     free(texto);
     return 0;
 }
@@ -19,10 +20,9 @@ char * iniciaTexto() {
     return texto;
 }
 char * recebeTexto() {
-    char * texto = leTexto();
+    char * texto = iniciaTexto();
     char * aux;
     int c, tamanho = 0;
-    printf("%s", texto);
     do {
         c = getchar();
         if(c != '#') {
@@ -36,34 +36,45 @@ char * recebeTexto() {
             else printf("\n** Erro! Sem memoria! **\n");
         }
     } while(c != '#');
+    gravaTexto (texto, strlen(texto));
+
     return texto;
 }
 
-
-char * leTexto() {
+void gravaTexto (char * texto, int nchar)
+{
     FILE * arquivo;
-    char * texto = iniciaTexto();
-    char * aux;
-    int c, tamanho = 0;
-    arquivo = fopen("meutexto.txt","r");
+    int i;
+    arquivo = fopen("meutexto.txt","w");
     if(arquivo == NULL)
-        return texto;
-    else {
-        do {
-            c = fgetc(arquivo);
-            if(c != EOF) {
-                aux = (char *) realloc(texto, tamanho+2);
-                if(aux != NULL) {
-                    texto = aux;
-                    texto[tamanho] = c;
-                    tamanho++;
-                    texto[tamanho] = '\0';
-                }
-                else printf("\n** Erro! Sem memoria! **\n");
-            }
-        } while(c != EOF);
+        fprintf(stderr, "Erro na criacao do arquivo!\n");
+    else
+    {
+        for(i = 0 ; i < nchar; i++)
+            fputc(texto[i], arquivo);
         fclose(arquivo);
-        return texto;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
